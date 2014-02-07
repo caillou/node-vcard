@@ -6,6 +6,11 @@ var u             = require('underscore');
 var util          = require('util');
 var validFields   = require('./lib/fields');
 
+var pushToArray = function (object, key, value) {
+	object[key] = object[key] || [];
+	object[key].push(value);
+}
+
 function vCard() {
 	/*
 	 * Read file from disk, validate and parse it.
@@ -140,13 +145,13 @@ function vCard() {
 				if (type.length > 0) {
 					snippet.type = type;
 					snippet.value = fields[1];
-					json[d[0]] = snippet;
+					pushToArray(json, d[0], snippet);
 				} else {
 					/* Be sure to remove any left over control chars, but give a special treat to N */
 					if (d[0] === 'N') {
-						json[d[0]] = fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, '');
+						pushToArray(json, d[0], fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, ''));
 					} else {
-						json[d[0]] = fields[1].replace(/;/g, ' ');
+						pushToArray(json, d[0], fields[1].replace(/;/g, ' '));
 					}
 				}
 			} else if (version === 4) {
@@ -180,13 +185,13 @@ function vCard() {
 					} else {
 						snippet.value = fields[2];
 					}
-					json[d[0]] = snippet;
+					pushToArray(json, d[0], snippet);
 				} else {
 					/* Be sure to remove any left over control chars, but give a special treat to N */
 					if (d[0] === 'N') {
-						json[d[0]] = fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, '');
+						pushToArray(json, d[0], fields[1].replace(/;+$/g, '').replace(/;/, ', ').replace(/ $/, ''));
 					} else {
-						json[d[0]] = fields[1].replace(/;/g, ' ');
+						pushToArray(json, d[0], fields[1].replace(/;/g, ' '));
 					}
 				}
 			} else {
